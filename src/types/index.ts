@@ -30,11 +30,18 @@ export interface Habit {
   isExample?: boolean;
 }
 
-// New types for gamification
+// New types for enhanced gamification
 export interface Achievement {
   id: string;
   title: string;
   description: string;
   type: 'task' | 'goal' | 'habit';
   unlocked: boolean;
+}
+
+export interface ActivityLog {
+  id: string;
+  type: 'task' | 'goal' | 'habit' | 'achievement' | 'level';
+  title: string;
+  timestamp: number;
 }
