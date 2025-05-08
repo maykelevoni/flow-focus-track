@@ -1,3 +1,4 @@
+
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Task, Goal, Habit, HabitDay, Achievement } from '../types';
@@ -18,8 +19,8 @@ interface AppContextType {
   updateHabit: (habit: Habit) => void;
   deleteHabit: (id: string) => void;
   toggleHabitDay: (habitId: string, dayIndex: number) => void;
-  activeTab: 'tasks' | 'goals' | 'habits';
-  setActiveTab: React.Dispatch<React.SetStateAction<'tasks' | 'goals' | 'habits'>>;
+  activeTab: 'tasks' | 'goals' | 'habits' | 'stats';
+  setActiveTab: React.Dispatch<React.SetStateAction<'tasks' | 'goals' | 'habits' | 'stats'>>;
   // Gamification features
   points: number;
   level: number;
@@ -132,7 +133,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [tasks, setTasks] = useState<Task[]>([]);
   const [goals, setGoals] = useState<Goal[]>([]);
   const [habits, setHabits] = useState<Habit[]>([]);
-  const [activeTab, setActiveTab] = useState<'tasks' | 'goals' | 'habits'>('tasks');
+  const [activeTab, setActiveTab] = useState<'tasks' | 'goals' | 'habits' | 'stats'>('tasks');
   
   // Gamification state
   const [points, setPoints] = useState<number>(0);

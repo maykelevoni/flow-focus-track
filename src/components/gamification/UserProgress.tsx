@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { Progress } from '../ui/progress';
-import { Trophy, Award, Star, Check, BarChart } from 'lucide-react';
+import { Trophy, Award, Star, Check, BarChart, Flame } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import GamificationDashboard from './GamificationDashboard';
