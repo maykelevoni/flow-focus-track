@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { toast } from "sonner";
-import { Trophy, Award, Star } from 'lucide-react';
+import { Trophy, Award, Star, Check } from 'lucide-react';
 
 const CompletionConfetti: React.FC = () => {
   const { recentPoints, recentAchievement } = useApp();

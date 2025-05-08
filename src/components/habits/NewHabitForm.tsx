@@ -29,7 +29,7 @@ const NewHabitForm: React.FC = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button 
-          className="rounded-full h-14 w-14 p-0 fixed bottom-20 left-1/2 transform -translate-x-1/2 shadow-lg bg-habits hover:bg-habits/90 z-10"
+          className="rounded-full h-14 w-14 p-0 fixed bottom-20 right-4 shadow-lg bg-habits hover:bg-habits/90 z-10"
           aria-label="Adicionar novo hábito"
         >
           <Plus size={24} />
