@@ -1,12 +1,12 @@
-
 export interface Task {
   id: string;
   title: string;
   description?: string;
   note?: string;
-  audioNote?: string; // URL to audio file
+  audioNote?: string;
   completed: boolean;
-  goalId?: string; // If this task is linked to a goal
+  goalId?: string;
+  isExample?: boolean;
 }
 
 export interface Goal {
@@ -14,10 +14,11 @@ export interface Goal {
   title: string;
   description?: string;
   tasks: Task[];
+  isExample?: boolean;
 }
 
 export interface HabitDay {
-  day: 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat' | 'Sun';
+  day: string;
   completed: boolean;
 }
 
@@ -25,4 +26,5 @@ export interface Habit {
   id: string;
   title: string;
   days: HabitDay[];
+  isExample?: boolean;
 }

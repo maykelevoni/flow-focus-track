@@ -9,11 +9,14 @@ import HabitsSection from '../components/habits/HabitsSection';
 const Index: React.FC = () => {
   return (
     <AppProvider>
-      <div className="container px-4 max-w-md mx-auto min-h-screen">
-        <div className="py-2"></div>
-        <TasksSection />
-        <GoalsSection />
-        <HabitsSection />
+      <div className="min-h-screen">
+        <div className="container px-4 max-w-md mx-auto pb-16 pt-4">
+          <div className="bg-white bg-opacity-60 backdrop-blur-sm rounded-xl shadow-sm p-4 min-h-screen">
+            <TasksSection />
+            <GoalsSection />
+            <HabitsSection />
+          </div>
+        </div>
         <Navigation />
       </div>
     </AppProvider>

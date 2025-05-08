@@ -19,6 +19,7 @@ const HabitItem: React.FC<HabitItemProps> = ({ habit }) => {
   const progress = (completedDays / habit.days.length) * 100;
   
   const handleSaveEdit = () => {
+    if (habit.isExample) return; // Prevent editing example habits
     if (!editedTitle.trim()) return;
     updateHabit({ ...habit, title: editedTitle });
     setIsEditing(false);
@@ -27,6 +28,11 @@ const HabitItem: React.FC<HabitItemProps> = ({ habit }) => {
   const handleCancelEdit = () => {
     setEditedTitle(habit.title);
     setIsEditing(false);
+  };
+  
+  const handleToggleDay = (index: number) => {
+    if (habit.isExample) return; // Prevent editing example habits
+    toggleHabitDay(habit.id, index);
   };
   
   return (
@@ -61,18 +67,22 @@ const HabitItem: React.FC<HabitItemProps> = ({ habit }) => {
             <h3 className="font-medium text-gray-800">{habit.title}</h3>
             
             <div className="flex items-center space-x-1">
-              <button 
-                onClick={() => setIsEditing(true)}
-                className="p-2 text-gray-500 hover:text-habits rounded-full"
-              >
-                <Pencil size={16} />
-              </button>
-              <button 
-                onClick={() => deleteHabit(habit.id)}
-                className="p-2 text-gray-500 hover:text-red-500 rounded-full"
-              >
-                <Trash2 size={16} />
-              </button>
+              {!habit.isExample && (
+                <>
+                  <button 
+                    onClick={() => setIsEditing(true)}
+                    className="p-2 text-gray-500 hover:text-habits rounded-full"
+                  >
+                    <Pencil size={16} />
+                  </button>
+                  <button 
+                    onClick={() => deleteHabit(habit.id)}
+                    className="p-2 text-gray-500 hover:text-red-500 rounded-full"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </>
+              )}
             </div>
           </div>
         )}
@@ -82,7 +92,8 @@ const HabitItem: React.FC<HabitItemProps> = ({ habit }) => {
             {habit.days.map((day, index) => (
               <button
                 key={day.day}
-                onClick={() => toggleHabitDay(habit.id, index)}
+                onClick={() => handleToggleDay(index)}
+                disabled={habit.isExample}
                 className={`w-full aspect-square rounded-md flex items-center justify-center text-xs font-medium
                   ${day.completed 
                     ? 'bg-habits text-white' 

@@ -27,6 +27,7 @@ const GoalItem: React.FC<GoalItemProps> = ({ goal }) => {
   const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
   
   const handleSaveEdit = () => {
+    if (goal.isExample) return; // Prevent editing example goals
     updateGoal({ ...editedGoal });
     setIsEditing(false);
   };
@@ -37,6 +38,7 @@ const GoalItem: React.FC<GoalItemProps> = ({ goal }) => {
   };
   
   const handleAddSubtask = () => {
+    if (goal.isExample) return; // Prevent adding tasks to example goals
     if (!newTaskTitle.trim()) return;
     
     addTaskToGoal({
@@ -52,6 +54,7 @@ const GoalItem: React.FC<GoalItemProps> = ({ goal }) => {
   };
   
   const handleToggleTaskComplete = (task: Task) => {
+    if (goal.isExample) return; // Prevent editing example goals
     updateTask({ ...task, completed: !task.completed });
   };
   
@@ -90,18 +93,22 @@ const GoalItem: React.FC<GoalItemProps> = ({ goal }) => {
               <h3 className="font-semibold text-lg text-gray-800">{goal.title}</h3>
               
               <div className="flex items-center space-x-1">
-                <button 
-                  onClick={() => setIsEditing(true)}
-                  className="p-2 text-gray-500 hover:text-goals rounded-full"
-                >
-                  <Pencil size={16} />
-                </button>
-                <button 
-                  onClick={() => deleteGoal(goal.id)}
-                  className="p-2 text-gray-500 hover:text-red-500 rounded-full"
-                >
-                  <Trash2 size={16} />
-                </button>
+                {!goal.isExample && (
+                  <>
+                    <button 
+                      onClick={() => setIsEditing(true)}
+                      className="p-2 text-gray-500 hover:text-goals rounded-full"
+                    >
+                      <Pencil size={16} />
+                    </button>
+                    <button 
+                      onClick={() => deleteGoal(goal.id)}
+                      className="p-2 text-gray-500 hover:text-red-500 rounded-full"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </>
+                )}
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
                   className="p-2 text-gray-500 hover:text-goals rounded-full"
@@ -128,61 +135,63 @@ const GoalItem: React.FC<GoalItemProps> = ({ goal }) => {
             <div className="border-t border-gray-100 p-4">
               <div className="flex items-center justify-between mb-3">
                 <h4 className="font-medium text-sm text-gray-700">Sub-tasks</h4>
-                <Dialog open={newTaskOpen} onOpenChange={setNewTaskOpen}>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="text-xs">
-                      <Plus size={14} className="mr-1" /> Add Task
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                      <DialogTitle>Add Task to Goal</DialogTitle>
-                    </DialogHeader>
-                    
-                    <div className="space-y-4 mt-2">
-                      <div className="space-y-2">
-                        <label htmlFor="taskTitle" className="text-sm font-medium">
-                          Title <span className="text-red-500">*</span>
-                        </label>
-                        <Input
-                          id="taskTitle"
-                          value={newTaskTitle}
-                          onChange={(e) => setNewTaskTitle(e.target.value)}
-                          placeholder="Task title"
-                        />
-                      </div>
+                {!goal.isExample && (
+                  <Dialog open={newTaskOpen} onOpenChange={setNewTaskOpen}>
+                    <DialogTrigger asChild>
+                      <Button variant="outline" size="sm" className="text-xs">
+                        <Plus size={14} className="mr-1" /> Add Task
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                      <DialogHeader>
+                        <DialogTitle>Add Task to Goal</DialogTitle>
+                      </DialogHeader>
                       
-                      <div className="space-y-2">
-                        <label htmlFor="taskDescription" className="text-sm font-medium">
-                          Description <span className="text-gray-400">(optional)</span>
-                        </label>
-                        <Input
-                          id="taskDescription"
-                          value={newTaskDescription}
-                          onChange={(e) => setNewTaskDescription(e.target.value)}
-                          placeholder="Brief description"
-                        />
+                      <div className="space-y-4 mt-2">
+                        <div className="space-y-2">
+                          <label htmlFor="taskTitle" className="text-sm font-medium">
+                            Title <span className="text-red-500">*</span>
+                          </label>
+                          <Input
+                            id="taskTitle"
+                            value={newTaskTitle}
+                            onChange={(e) => setNewTaskTitle(e.target.value)}
+                            placeholder="Task title"
+                          />
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <label htmlFor="taskDescription" className="text-sm font-medium">
+                            Description <span className="text-gray-400">(optional)</span>
+                          </label>
+                          <Input
+                            id="taskDescription"
+                            value={newTaskDescription}
+                            onChange={(e) => setNewTaskDescription(e.target.value)}
+                            placeholder="Brief description"
+                          />
+                        </div>
+                        
+                        <div className="pt-4 flex justify-end space-x-2">
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            onClick={() => setNewTaskOpen(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button 
+                            type="button" 
+                            onClick={handleAddSubtask} 
+                            className="bg-goals hover:bg-goals/90"
+                          >
+                            Add Task
+                          </Button>
+                        </div>
                       </div>
-                      
-                      <div className="pt-4 flex justify-end space-x-2">
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          onClick={() => setNewTaskOpen(false)}
-                        >
-                          Cancel
-                        </Button>
-                        <Button 
-                          type="button" 
-                          onClick={handleAddSubtask} 
-                          className="bg-goals hover:bg-goals/90"
-                        >
-                          Add Task
-                        </Button>
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                    </DialogContent>
+                  </Dialog>
+                )}
               </div>
               
               {goal.tasks.length === 0 ? (
@@ -198,6 +207,7 @@ const GoalItem: React.FC<GoalItemProps> = ({ goal }) => {
                             ? 'bg-goals border-goals' 
                             : 'border-gray-300'
                         }`}
+                        disabled={goal.isExample}
                       >
                         {task.completed && <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><polyline points="20 6 9 17 4 12"></polyline></svg>}
                       </button>

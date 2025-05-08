@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Task } from '../../types';
 import { useApp } from '../../context/AppContext';
-import { Check, Trash2, Pencil, Mic, ChevronDown, ChevronUp } from 'lucide-react';
+import { Check, Trash2, Pencil, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Textarea } from '../ui/textarea';
 
@@ -17,10 +17,12 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   const [editedTask, setEditedTask] = useState(task);
 
   const handleToggleComplete = () => {
+    if (task.isExample) return; // Prevent editing example tasks
     updateTask({ ...task, completed: !task.completed });
   };
 
   const handleSaveEdit = () => {
+    if (task.isExample) return; // Prevent editing example tasks
     updateTask(editedTask);
     setIsEditing(false);
   };
@@ -78,6 +80,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
                   ? 'bg-tasks border-tasks' 
                   : 'border-gray-300'
               }`}
+              disabled={task.isExample}
             >
               {task.completed && <Check size={12} className="text-white" />}
             </button>
@@ -92,18 +95,22 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
             </div>
             
             <div className="flex items-center space-x-2 ml-2">
-              <button 
-                onClick={() => setIsEditing(true)}
-                className="p-2 text-gray-500 hover:text-tasks rounded-full"
-              >
-                <Pencil size={16} />
-              </button>
-              <button 
-                onClick={() => deleteTask(task.id)}
-                className="p-2 text-gray-500 hover:text-red-500 rounded-full"
-              >
-                <Trash2 size={16} />
-              </button>
+              {!task.isExample && (
+                <>
+                  <button 
+                    onClick={() => setIsEditing(true)}
+                    className="p-2 text-gray-500 hover:text-tasks rounded-full"
+                  >
+                    <Pencil size={16} />
+                  </button>
+                  <button 
+                    onClick={() => deleteTask(task.id)}
+                    className="p-2 text-gray-500 hover:text-red-500 rounded-full"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </>
+              )}
               <button
                 onClick={() => setShowDetails(!showDetails)}
                 className="p-2 text-gray-500 hover:text-tasks rounded-full"
