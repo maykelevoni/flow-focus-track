@@ -1,42 +1,60 @@
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  width: 100%;
+  text-align: left;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+body {
+  background-color: #f9fafc;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.bg-tasks {
+  background-color: #3b82f6;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.bg-tasks\/90 {
+  background-color: #3b82f6e6;
 }
 
-.card {
-  padding: 2em;
+.bg-goals {
+  background-color: #8b5cf6;
 }
 
-.read-the-docs {
-  color: #888;
+.bg-goals\/90 {
+  background-color: #8b5cf6e6;
+}
+
+.bg-habits {
+  background-color: #10b981;
+}
+
+.bg-habits\/90 {
+  background-color: #10b981e6;
+}
+
+.text-tasks {
+  color: #3b82f6;
+}
+
+.text-goals {
+  color: #8b5cf6;
+}
+
+.text-habits {
+  color: #10b981;
+}
+
+.hover\:text-tasks:hover {
+  color: #3b82f6;
+}
+
+.hover\:text-goals:hover {
+  color: #8b5cf6;
+}
+
+.hover\:text-habits:hover {
+  color: #10b981;
 }
