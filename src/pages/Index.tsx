@@ -10,6 +10,7 @@ const Index: React.FC = () => {
   return (
     <AppProvider>
       <div className="container px-4 max-w-md mx-auto min-h-screen">
+        <div className="py-2"></div>
         <TasksSection />
         <GoalsSection />
         <HabitsSection />

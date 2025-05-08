@@ -32,6 +32,81 @@ const defaultDays: HabitDay[] = [
   { day: 'Sun', completed: false },
 ];
 
+// Exemplos iniciais
+const initialTasks: Task[] = [
+  {
+    id: uuidv4(),
+    title: 'Responder emails importantes',
+    description: 'Priorizar os emails de clientes',
+    completed: false
+  },
+  {
+    id: uuidv4(),
+    title: 'Atualizar meu currículo',
+    description: 'Adicionar experiências recentes',
+    note: 'Verificar modelo no Google Drive',
+    completed: true
+  },
+  {
+    id: uuidv4(),
+    title: 'Comprar presentes de aniversário',
+    completed: false
+  }
+];
+
+const initialGoalId = uuidv4();
+const initialTaskForGoal = {
+  id: uuidv4(),
+  title: 'Correr 3km',
+  description: 'Correr no parque da cidade',
+  completed: true,
+  goalId: initialGoalId
+};
+
+const initialGoals: Goal[] = [
+  {
+    id: initialGoalId,
+    title: 'Melhorar condicionamento físico',
+    description: 'Exercícios diários por 30 dias',
+    tasks: [initialTaskForGoal]
+  },
+  {
+    id: uuidv4(),
+    title: 'Aprender novo idioma',
+    description: 'Alcançar nível básico em 3 meses',
+    tasks: []
+  }
+];
+
+const initialHabits: Habit[] = [
+  {
+    id: uuidv4(),
+    title: 'Meditação matinal',
+    days: [
+      { day: 'Mon', completed: true },
+      { day: 'Tue', completed: true },
+      { day: 'Wed', completed: false },
+      { day: 'Thu', completed: false },
+      { day: 'Fri', completed: false },
+      { day: 'Sat', completed: false },
+      { day: 'Sun', completed: false },
+    ]
+  },
+  {
+    id: uuidv4(),
+    title: 'Ler 20 páginas',
+    days: [
+      { day: 'Mon', completed: true },
+      { day: 'Tue', completed: false },
+      { day: 'Wed', completed: true },
+      { day: 'Thu', completed: false },
+      { day: 'Fri', completed: true },
+      { day: 'Sat', completed: false },
+      { day: 'Sun', completed: false },
+    ]
+  }
+];
+
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -47,8 +122,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const savedHabits = localStorage.getItem('habits');
 
     if (savedTasks) setTasks(JSON.parse(savedTasks));
+    else setTasks(initialTasks);
+    
     if (savedGoals) setGoals(JSON.parse(savedGoals));
+    else setGoals(initialGoals);
+    
     if (savedHabits) setHabits(JSON.parse(savedHabits));
+    else setHabits(initialHabits);
   }, []);
 
   // Save data to localStorage whenever it changes

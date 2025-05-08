@@ -1,4 +1,5 @@
 
+
 #root {
   margin: 0;
   padding: 0;
@@ -9,30 +10,39 @@
 
 body {
   background-color: #f9fafc;
+  background-image: linear-gradient(180deg, rgba(240,242,247,0.8) 0%, rgba(255,255,255,1) 100%);
+  min-height: 100vh;
 }
 
+/* Cores para as seções */
 .bg-tasks {
   background-color: #3b82f6;
+  background-image: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
 }
 
 .bg-tasks\/90 {
   background-color: #3b82f6e6;
+  background-image: linear-gradient(135deg, #3b82f6e6 0%, #60a5fae6 100%);
 }
 
 .bg-goals {
   background-color: #8b5cf6;
+  background-image: linear-gradient(135deg, #8b5cf6 0%, #a78bfa 100%);
 }
 
 .bg-goals\/90 {
   background-color: #8b5cf6e6;
+  background-image: linear-gradient(135deg, #8b5cf6e6 0%, #a78bfae6 100%);
 }
 
 .bg-habits {
   background-color: #10b981;
+  background-image: linear-gradient(135deg, #10b981 0%, #34d399 100%);
 }
 
 .bg-habits\/90 {
   background-color: #10b981e6;
+  background-image: linear-gradient(135deg, #10b981e6 0%, #34d399e6 100%);
 }
 
 .text-tasks {
@@ -58,3 +68,35 @@ body {
 .hover\:text-habits:hover {
   color: #10b981;
 }
+
+/* Estilos para cards e elementos visuais */
+.card-shadow {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.section-header {
+  background-image: linear-gradient(120deg, #f6f8fc 0%, #ffffff 100%);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.empty-state {
+  background-image: linear-gradient(120deg, #fafbfd 0%, #f8f9fb 100%);
+  border: 1px dashed #ddd;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
