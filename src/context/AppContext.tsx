@@ -1,7 +1,6 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { Task, Goal, Habit, HabitDay } from '../types';
+import { Task, Goal, Habit, HabitDay, Achievement } from '../types';
 
 interface AppContextType {
   tasks: Task[];
@@ -20,6 +19,14 @@ interface AppContextType {
   toggleHabitDay: (habitId: string, dayIndex: number) => void;
   activeTab: 'tasks' | 'goals' | 'habits';
   setActiveTab: React.Dispatch<React.SetStateAction<'tasks' | 'goals' | 'habits'>>;
+  // Gamification features
+  points: number;
+  level: number;
+  nextLevelPoints: number;
+  achievements: Achievement[];
+  recentPoints: number;
+  recentAchievement: Achievement | null;
+  streaks: Record<string, number>;
 }
 
 const defaultDays: HabitDay[] = [
@@ -107,6 +114,17 @@ const initialHabits: Habit[] = [
   }
 ];
 
+// Initial achievements
+const initialAchievements: Achievement[] = [
+  {
+    id: uuidv4(),
+    title: 'Primeiros passos',
+    description: 'Complete sua primeira tarefa',
+    type: 'task',
+    unlocked: true
+  }
+];
+
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -114,12 +132,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [goals, setGoals] = useState<Goal[]>([]);
   const [habits, setHabits] = useState<Habit[]>([]);
   const [activeTab, setActiveTab] = useState<'tasks' | 'goals' | 'habits'>('tasks');
+  
+  // Gamification state
+  const [points, setPoints] = useState<number>(0);
+  const [level, setLevel] = useState<number>(1);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [recentPoints, setRecentPoints] = useState<number>(0);
+  const [recentAchievement, setRecentAchievement] = useState<Achievement | null>(null);
+  const [streaks, setStreaks] = useState<Record<string, number>>({});
+
+  // Calculate next level points (increases with each level)
+  const nextLevelPoints = level * 100;
 
   // Load data from localStorage on initial render
   useEffect(() => {
     const savedTasks = localStorage.getItem('tasks');
     const savedGoals = localStorage.getItem('goals');
     const savedHabits = localStorage.getItem('habits');
+    const savedPoints = localStorage.getItem('points');
+    const savedLevel = localStorage.getItem('level');
+    const savedAchievements = localStorage.getItem('achievements');
+    const savedStreaks = localStorage.getItem('streaks');
 
     if (savedTasks) setTasks(JSON.parse(savedTasks));
     else setTasks(initialTasks);
@@ -129,6 +162,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     
     if (savedHabits) setHabits(JSON.parse(savedHabits));
     else setHabits(initialHabits);
+    
+    if (savedPoints) setPoints(Number(savedPoints));
+    if (savedLevel) setLevel(Number(savedLevel));
+    if (savedAchievements) setAchievements(JSON.parse(savedAchievements));
+    else setAchievements(initialAchievements);
+    if (savedStreaks) setStreaks(JSON.parse(savedStreaks));
   }, []);
 
   // Save data to localStorage whenever it changes
@@ -144,15 +183,84 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem('habits', JSON.stringify(habits));
   }, [habits]);
 
+  useEffect(() => {
+    localStorage.setItem('points', String(points));
+  }, [points]);
+
+  useEffect(() => {
+    localStorage.setItem('level', String(level));
+  }, [level]);
+
+  useEffect(() => {
+    localStorage.setItem('achievements', JSON.stringify(achievements));
+  }, [achievements]);
+
+  useEffect(() => {
+    localStorage.setItem('streaks', JSON.stringify(streaks));
+  }, [streaks]);
+
+  // Check for level up
+  useEffect(() => {
+    if (points >= nextLevelPoints) {
+      setLevel(prev => prev + 1);
+      toast.success(`Parabéns! Você alcançou o nível ${level + 1}!`, {
+        description: "Continue com o bom trabalho!",
+      });
+    }
+  }, [points, nextLevelPoints, level]);
+
+  // Award points and handle achievements
+  const awardPoints = (amount: number) => {
+    setPoints(prev => prev + amount);
+    setRecentPoints(amount);
+    // Reset recent points after a delay
+    setTimeout(() => setRecentPoints(0), 3000);
+  };
+
+  const unlockAchievement = (achievement: Omit<Achievement, 'id' | 'unlocked'>) => {
+    const newAchievement = {
+      ...achievement,
+      id: uuidv4(),
+      unlocked: true
+    };
+    setAchievements(prev => [...prev, newAchievement]);
+    setRecentAchievement(newAchievement);
+    // Reset recent achievement after a delay
+    setTimeout(() => setRecentAchievement(null), 5000);
+  };
+
+  const updateStreak = (habitId: string, completed: boolean) => {
+    setStreaks(prev => {
+      const currentStreak = prev[habitId] || 0;
+      return {
+        ...prev,
+        [habitId]: completed ? currentStreak + 1 : 0
+      };
+    });
+  };
+
   const addTask = (taskData: Omit<Task, 'id'>) => {
     const newTask: Task = {
       ...taskData,
       id: uuidv4(),
     };
     setTasks((prev) => [...prev, newTask]);
+    
+    // Award points for creating a task
+    awardPoints(5);
+    
+    // Check for first task achievement
+    if (tasks.length === 0 && !achievements.some(a => a.title === 'Primeira Tarefa')) {
+      unlockAchievement({
+        title: 'Primeira Tarefa',
+        description: 'Você criou sua primeira tarefa!',
+        type: 'task'
+      });
+    }
   };
 
   const updateTask = (updatedTask: Task) => {
+    const previousTask = tasks.find(t => t.id === updatedTask.id);
     setTasks((prev) => 
       prev.map((task) => (task.id === updatedTask.id ? updatedTask : task))
     );
@@ -170,6 +278,28 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           return goal;
         })
       );
+    }
+    
+    // Award points when task is completed
+    if (!previousTask?.completed && updatedTask.completed) {
+      awardPoints(10);
+      
+      // Check for task achievements
+      const completedTasks = tasks.filter(t => t.completed).length + 1;
+      if (completedTasks === 5 && !achievements.some(a => a.title === 'Produtividade Iniciante')) {
+        unlockAchievement({
+          title: 'Produtividade Iniciante',
+          description: 'Complete 5 tarefas',
+          type: 'task'
+        });
+      }
+      if (completedTasks === 10 && !achievements.some(a => a.title === 'Produtividade Avançada')) {
+        unlockAchievement({
+          title: 'Produtividade Avançada',
+          description: 'Complete 10 tarefas',
+          type: 'task'
+        });
+      }
     }
   };
 
@@ -240,6 +370,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       days: [...defaultDays], // Create fresh copy of default days
     };
     setHabits((prev) => [...prev, newHabit]);
+    
+    // Award points for creating a habit
+    awardPoints(15);
+    
+    // Check for first habit achievement
+    if (habits.length === 0 && !achievements.some(a => a.title === 'Primeiro Hábito')) {
+      unlockAchievement({
+        title: 'Primeiro Hábito',
+        description: 'Você criou seu primeiro hábito!',
+        type: 'habit'
+      });
+    }
   };
 
   const updateHabit = (updatedHabit: Habit) => {
@@ -257,10 +399,37 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       prevHabits.map((habit) => {
         if (habit.id === habitId) {
           const updatedDays = [...habit.days];
+          const wasCompleted = updatedDays[dayIndex].completed;
           updatedDays[dayIndex] = {
             ...updatedDays[dayIndex],
-            completed: !updatedDays[dayIndex].completed,
+            completed: !wasCompleted,
           };
+          
+          // Update streak and award points if completed
+          if (!wasCompleted) {
+            updateStreak(habitId, true);
+            awardPoints(5);
+            
+            // Check for habit streak achievements
+            const newStreak = (streaks[habitId] || 0) + 1;
+            if (newStreak === 3 && !achievements.some(a => a.title === 'Streak Inicial')) {
+              unlockAchievement({
+                title: 'Streak Inicial',
+                description: 'Mantenha um hábito por 3 dias consecutivos',
+                type: 'habit'
+              });
+            }
+            if (newStreak === 7 && !achievements.some(a => a.title === 'Streak Semanal')) {
+              unlockAchievement({
+                title: 'Streak Semanal',
+                description: 'Mantenha um hábito por 7 dias consecutivos',
+                type: 'habit'
+              });
+            }
+          } else {
+            updateStreak(habitId, false);
+          }
+          
           return { ...habit, days: updatedDays };
         }
         return habit;
@@ -285,6 +454,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     toggleHabitDay,
     activeTab,
     setActiveTab,
+    // Gamification properties
+    points,
+    level,
+    nextLevelPoints,
+    achievements,
+    recentPoints,
+    recentAchievement,
+    streaks
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

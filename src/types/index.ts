@@ -1,3 +1,4 @@
+
 export interface Task {
   id: string;
   title: string;
@@ -27,4 +28,13 @@ export interface Habit {
   title: string;
   days: HabitDay[];
   isExample?: boolean;
+}
+
+// New types for gamification
+export interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  type: 'task' | 'goal' | 'habit';
+  unlocked: boolean;
 }

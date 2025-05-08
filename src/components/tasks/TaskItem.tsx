@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Task } from '../../types';
 import { useApp } from '../../context/AppContext';
@@ -15,9 +14,17 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [editedTask, setEditedTask] = useState(task);
+  const [showPoints, setShowPoints] = useState(false);
 
   const handleToggleComplete = () => {
     if (task.isExample) return; // Prevent editing example tasks
+    
+    // If task is being marked as complete, show points animation
+    if (!task.completed) {
+      setShowPoints(true);
+      setTimeout(() => setShowPoints(false), 1500);
+    }
+    
     updateTask({ ...task, completed: !task.completed });
   };
 
@@ -33,7 +40,13 @@ const TaskItem: React.FC<TaskItemProps> = ({ task }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-3 overflow-hidden">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-3 overflow-hidden relative">
+      {showPoints && (
+        <div className="absolute top-0 right-0 transform -translate-y-2 translate-x-2 bg-tasks text-white rounded-full px-2 py-1 text-xs font-bold z-20 animate-fade-in">
+          +10 pontos
+        </div>
+      )}
+      
       {isEditing ? (
         <div className="p-4">
           <div className="mb-3">
