@@ -44,7 +44,7 @@ const GoalsSection: React.FC = () => {
   
   return (
     <div className="pb-20 pt-4 animate-fade-in">
-      <div className="mb-6 section-header">
+      <div className="mb-6 section-header goals-header">
         <h1 className="text-2xl font-bold text-gray-800">Objetivos</h1>
         <p className="text-gray-500">Acompanhe seus objetivos de longo prazo</p>
       </div>

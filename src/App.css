@@ -73,12 +73,30 @@ body {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
+/* Updated section header with colorful backgrounds based on section type */
 .section-header {
-  background-image: linear-gradient(120deg, #f6f8fc 0%, #ffffff 100%);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   border-radius: 0.75rem;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Task section header */
+.section-header.tasks-header {
+  background-image: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+  border-left: 4px solid #3b82f6;
+}
+
+/* Goals section header */
+.section-header.goals-header {
+  background-image: linear-gradient(120deg, #e9defa 0%, #fbfcdb 100%);
+  border-left: 4px solid #8b5cf6;
+}
+
+/* Habits section header */
+.section-header.habits-header {
+  background-image: linear-gradient(120deg, #d4fc79 0%, #e5fcc2 100%);
+  border-left: 4px solid #10b981;
 }
 
 .empty-state {
@@ -96,28 +114,29 @@ body {
   position: relative;
 }
 
+/* Updated example item label */
 .example-item::after {
-  content: "Exemplo";
+  content: "Exemplo - crie o seu";
   position: absolute;
   top: 0.25rem;
   right: 0.25rem;
-  font-size: 0.6rem;
-  padding: 0.1rem 0.3rem;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.4rem;
   border-radius: 0.25rem;
-  background-color: rgba(0, 0, 0, 0.1);
-  color: #666;
+  color: #555;
+  font-weight: 500;
 }
 
 .example-task::after {
-  background-color: rgba(59, 130, 246, 0.1);
+  background-color: rgba(59, 130, 246, 0.15);
 }
 
 .example-goal::after {
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: rgba(139, 92, 246, 0.15);
 }
 
 .example-habit::after {
-  background-color: rgba(16, 185, 129, 0.1);
+  background-color: rgba(16, 185, 129, 0.15);
 }
 
 /* Animações */
@@ -129,4 +148,3 @@ body {
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out forwards;
 }
-

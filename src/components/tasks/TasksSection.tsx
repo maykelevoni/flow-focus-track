@@ -34,7 +34,7 @@ const TasksSection: React.FC = () => {
   
   return (
     <div className="pb-20 pt-4 animate-fade-in">
-      <div className="mb-6 section-header">
+      <div className="mb-6 section-header tasks-header">
         <h1 className="text-2xl font-bold text-gray-800">Tarefas</h1>
         <p className="text-gray-500">Gerencie suas tarefas diárias</p>
       </div>
